@@ -1,5 +1,5 @@
-// eslint-disable-next-line import/no-unresolved
-import '@/styles/globals'
+// eslint-disable-next-line import/extensions, import/no-unresolved
+import '@/styles/globals.css'
 import type { AppProps } from 'next/app'
 import { SessionProvider } from 'next-auth/react'
 
