@@ -4,8 +4,12 @@ import GoogleProvider from 'next-auth/providers/google'
 import GithubProvider from 'next-auth/providers/github'
 import DiscordProvider from 'next-auth/providers/discord'
 import TwitterProvider from 'next-auth/providers/twitter'
+import { MongoDBAdapter } from '@next-auth/mongodb-adapter'
+// eslint-disable-next-line import/no-unresolved
+import clientPromise from '@/lib/mongodb'
 
 export default NextAuth({
+  adapter: MongoDBAdapter(clientPromise),
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_ID as string,
