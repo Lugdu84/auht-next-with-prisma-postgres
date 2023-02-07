@@ -5,6 +5,7 @@ import Image from 'next/image'
 
 export default function Home() {
   const { data: session } = useSession()
+  console.log('session', session)
   return (
     <div className="h-screen flex flex-col items-center justify-center space-y-2">
       <Head>
