@@ -5,8 +5,9 @@ import GithubProvider from 'next-auth/providers/github'
 import DiscordProvider from 'next-auth/providers/discord'
 import TwitterProvider from 'next-auth/providers/twitter'
 import { MongoDBAdapter } from '@next-auth/mongodb-adapter'
-import { AdapterUser } from 'next-auth/adapters'
 import { JWT } from 'next-auth/jwt'
+// eslint-disable-next-line import/no-unresolved
+import { AdapterUser } from 'next-auth/adapters'
 import clientPromise from '@/lib/mongodb'
 
 export default NextAuth({
