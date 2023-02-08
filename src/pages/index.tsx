@@ -5,6 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { AiFillGithub } from 'react-icons/ai'
 import { FaFacebook, FaLinkedin, FaYoutube } from 'react-icons/fa'
+import SocialLink from '@/components/socialLink'
 
 export default function Home() {
   const { data: session } = useSession()
@@ -73,34 +74,10 @@ export default function Home() {
                     <AiFillGithub size={24} />
                   </Link>
                   <div className="flex justify-center gap-4 mt-4 pt-6">
-                    <Link
-                      href="/"
-                      rel="noopener noreferrer"
-                      className="hover:scale-125 transition ease-in-out"
-                    >
-                      <AiFillGithub size={24} />
-                    </Link>
-                    <Link
-                      href="/"
-                      rel="noopener noreferrer"
-                      className="hover:scale-125 transition ease-in-out"
-                    >
-                      <FaLinkedin size={24} />
-                    </Link>
-                    <Link
-                      href="/"
-                      rel="noopener noreferrer"
-                      className="hover:scale-125 transition ease-in-out"
-                    >
-                      <FaFacebook size={24} />
-                    </Link>
-                    <Link
-                      href="/"
-                      rel="noopener noreferrer"
-                      className="hover:scale-125 transition ease-in-out"
-                    >
-                      <FaYoutube size={24} />
-                    </Link>
+                    <SocialLink href="/" Icon={AiFillGithub} />
+                    <SocialLink href="/" Icon={FaLinkedin} />
+                    <SocialLink href="/" Icon={FaFacebook} />
+                    <SocialLink href="/" Icon={FaYoutube} />
                   </div>
                 </div>
               </div>
