@@ -20,7 +20,7 @@ function Input({ type, name, label, placeholder, Icon }: InputProps) {
       <input
         type={type}
         placeholder={placeholder}
-        className="w-full py-2 pr-7 pl-8 block rounded-md border border-gray-500 outline-offset-2 outline-transparent focus:border-blue-500 focus:ring-blue-600 focus:ring-2 text-sm"
+        className="w-full py-2 pr-7 pl-8 block rounded-md border border-gray-600  outline-offset-5 outline-gray-800 focus:outline-blue-600 text-sm focus:border-transparent"
       />
     </div>
   )
