@@ -5,7 +5,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { AiFillGithub } from 'react-icons/ai'
 import { FaFacebook, FaLinkedin, FaYoutube } from 'react-icons/fa'
-import SocialLink from '@/components/socialLink'
+import SocialLink from '@/components/buttons/socialLink'
 
 export default function Home() {
   const { data: session } = useSession()
