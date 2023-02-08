@@ -1,11 +1,12 @@
-import NextAuth from 'next-auth'
+import NextAuth, { Account, Profile, Session, User } from 'next-auth'
 import FacebookProvider from 'next-auth/providers/facebook'
 import GoogleProvider from 'next-auth/providers/google'
 import GithubProvider from 'next-auth/providers/github'
 import DiscordProvider from 'next-auth/providers/discord'
 import TwitterProvider from 'next-auth/providers/twitter'
 import { MongoDBAdapter } from '@next-auth/mongodb-adapter'
-// eslint-disable-next-line import/no-unresolved
+import { AdapterUser } from 'next-auth/adapters'
+import { JWT } from 'next-auth/jwt'
 import clientPromise from '@/lib/mongodb'
 
 export default NextAuth({
@@ -33,4 +34,42 @@ export default NextAuth({
     }),
   ],
   secret: process.env.NEXTAUTH_SECRET as string,
+  session: {
+    strategy: 'jwt',
+  },
+  callbacks: {
+    async jwt({
+      token,
+      user,
+      account,
+      profile,
+      isNewUser,
+    }: {
+      token: JWT
+      user?: User | AdapterUser | undefined
+      account?: Account | null | undefined
+      profile?: Profile | undefined
+      isNewUser?: boolean | undefined
+    }) {
+      console.log('account in callback', account)
+      console.log('profile in callback', profile)
+      console.log('user in callback', user)
+      console.log('token in callback', token)
+      console.log('isNewUser in callback', isNewUser)
+      const updatedToken = { ...token }
+      if (user) {
+        updatedToken.provider = account?.provider
+      }
+      return updatedToken
+    },
+    async session({ session, token }: { session: Session; token: JWT }) {
+      console.log('session in callback', session)
+      const updatedSession = { ...session }
+      if (session.user) {
+        updatedSession.user.provider = token.provider as string
+        updatedSession.user.id = token.sub as string
+      }
+      return updatedSession
+    },
+  },
 })

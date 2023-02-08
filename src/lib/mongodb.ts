@@ -1,14 +1,16 @@
+/* eslint-disable no-underscore-dangle */
 // This approach is taken from https://github.com/vercel/next.js/tree/canary/examples/with-mongodb
 import { MongoClient } from 'mongodb'
 
 if (!process.env.DATABASE_URL) {
-  throw new Error('Invalid/Missing environment variable: "MONGODB_URI"')
+  throw new Error('Invalid/Missing environment variable: "DATABASE_URL"')
 }
 
 const uri = process.env.DATABASE_URL
 const options = {}
 
 let client
+// eslint-disable-next-line import/no-mutable-exports
 let clientPromise: Promise<MongoClient>
 
 if (process.env.NODE_ENV === 'development') {
