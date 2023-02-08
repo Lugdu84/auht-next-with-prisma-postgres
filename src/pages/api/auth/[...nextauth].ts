@@ -59,6 +59,7 @@ export default NextAuth({
       const updatedToken = { ...token }
       if (user) {
         updatedToken.provider = account?.provider
+        updatedToken.role = user.role
       }
       return updatedToken
     },
@@ -68,6 +69,7 @@ export default NextAuth({
       if (session.user) {
         updatedSession.user.provider = token.provider as string
         updatedSession.user.id = token.sub as string
+        updatedSession.user.role = token.role as string
       }
       return updatedSession
     },

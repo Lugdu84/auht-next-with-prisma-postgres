@@ -11,6 +11,7 @@ export default function SocialLink({ href, Icon }: Props) {
   return (
     <Link
       href={href}
+      target="_blank"
       rel="noopener noreferrer"
       className="hover:scale-125 transition ease-in-out"
     >

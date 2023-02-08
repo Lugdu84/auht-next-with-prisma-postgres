@@ -13,7 +13,7 @@ export default function Home() {
   const applicationInfos =
     'Application web permettant de se connecter avec google, facebook, github, discord, email et mot de passe.'
   const SlackInfos =
-    "Dans ce projet, j'ai utilisé React, Next.js, NextAuth, MongoDB, Mongoose TailwindCSS et Bcrypt. "
+    "Dans ce projet, j'ai utilisé React, Next.js, Typescript, NextAuth, MongoDB, Mongoose TailwindCSS et Bcrypt. "
   return (
     <div className="bg-black min-h-screen text-white flex items-center justify-center">
       <Head>
@@ -22,7 +22,7 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className="mx-auto">
+      <div className=" container mx-auto">
         <div className="border border-white relative flex flex-col w-full rounded-lg">
           <div className="flex flex-col justify-center items-center">
             <div className="w-full text-right">
