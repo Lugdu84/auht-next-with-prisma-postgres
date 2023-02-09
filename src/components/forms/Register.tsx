@@ -5,6 +5,9 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import validator from 'validator'
 import { AiFillLock, AiOutlineMail } from 'react-icons/ai'
 import { BsTelephone } from 'react-icons/bs'
+import { useEffect, useState } from 'react'
+import zxcvbn from 'zxcvbn'
+import Link from 'next/link'
 import Input from '../inputs/input'
 
 const schema = z
@@ -30,6 +33,11 @@ const schema = z
       .string()
       .min(6, 'Le mot de passe doit contenir au moins 8 caractères'),
     confirm_password: z.string(),
+    accept: z.literal(true, {
+      errorMap: () => ({
+        message: "Vous devez accepter les conditions d'utilisation",
+      }),
+    }),
   })
   .refine((data) => data.password === data.confirm_password, {
     message: 'Les mots de passe ne correspondent pas',
@@ -39,6 +47,7 @@ const schema = z
 type FormSchemaType = z.infer<typeof schema>
 
 export default function Register() {
+  const [passwordScore, setPasswordScore] = useState(0)
   const {
     register,
     handleSubmit,
@@ -48,9 +57,25 @@ export default function Register() {
     resolver: zodResolver(schema),
   })
 
-  console.log(watch())
+  useEffect(() => {
+    setPasswordScore(validatePasswordStrength())
+  }, [watch().password])
 
-  const onSubmit = (data) => console.log(data)
+  console.log('errors', errors)
+
+  const onSubmit = (data: FormSchemaType) => console.log(data)
+
+  const validatePasswordStrength = () => {
+    const { password } = watch()
+    return zxcvbn(password || '').score
+  }
+
+  const passwordStrong = () => {
+    if (passwordScore <= 2) return 'bg-red-400'
+    if (passwordScore < 4) return 'bg-yellow-400'
+    return 'bg-green-500'
+  }
+
   return (
     <form className="my-8 text-sm" onSubmit={handleSubmit(onSubmit)}>
       <div className="gap-2 md:flex">
@@ -63,6 +88,7 @@ export default function Register() {
           register={register}
           error={errors?.first_name?.message}
           disabled={isSubmitting}
+          className="md:w-1/2"
         />
         <Input
           name="last_name"
@@ -73,47 +99,80 @@ export default function Register() {
           register={register}
           error={errors?.last_name?.message}
           disabled={isSubmitting}
+          className="md:w-1/2"
         />
-        <Input
-          name="email"
-          label="Email"
-          type="text"
-          Icon={AiOutlineMail}
-          placeholder="monadresse@adresse.com"
-          register={register}
-          error={errors?.email?.message}
-          disabled={isSubmitting}
+      </div>
+      <Input
+        name="email"
+        label="Email"
+        type="text"
+        Icon={AiOutlineMail}
+        placeholder="monadresse@adresse.com"
+        register={register}
+        error={errors?.email?.message}
+        disabled={isSubmitting}
+      />
+      <Input
+        name="phone"
+        label="Numéro de téléphone"
+        type="number"
+        Icon={BsTelephone}
+        placeholder="06-34-41-89-03"
+        register={register}
+        error={errors?.phone?.message}
+        disabled={isSubmitting}
+      />
+      <Input
+        name="password"
+        label="Mot de passe"
+        type="password"
+        Icon={AiFillLock}
+        placeholder="Votre mot de passe"
+        register={register}
+        error={errors?.password?.message}
+        disabled={isSubmitting}
+      />
+      {watch().password && (
+        <div className="flex mt-2">
+          {Array.from(Array(5).keys()).map((span, i) => (
+            // eslint-disable-next-line react/no-array-index-key
+            <span className=" w-1/5 px-1" key={i}>
+              <div className={`h-2 rounded-xl ${passwordStrong()}`} />
+            </span>
+          ))}
+        </div>
+      )}
+      <Input
+        name="confirm_password"
+        label="Confirmer votre mot de passe"
+        type="password"
+        Icon={AiFillLock}
+        placeholder="Votre mot de passe"
+        register={register}
+        error={errors?.confirm_password?.message}
+        disabled={isSubmitting}
+      />
+      <div className="flex items-center mt-3">
+        <input
+          type="checkbox"
+          id="accept"
+          className="mr-2 focus:ring-0 rounded"
+          {...register('accept')}
         />
-        <Input
-          name="phone"
-          label="Numéro de téléphone"
-          type="number"
-          Icon={BsTelephone}
-          placeholder="06-34-41-89-03"
-          register={register}
-          error={errors?.phone?.message}
-          disabled={isSubmitting}
-        />
-        <Input
-          name="password"
-          label="Mot de passe"
-          type="password"
-          Icon={AiFillLock}
-          placeholder="Votre mot de passe"
-          register={register}
-          error={errors?.password?.message}
-          disabled={isSubmitting}
-        />
-        <Input
-          name="confirm_password"
-          label="Confirmer votre mot de passe"
-          type="password"
-          Icon={AiFillLock}
-          placeholder="Votre mot de passe"
-          register={register}
-          error={errors?.confirm_password?.message}
-          disabled={isSubmitting}
-        />
+        <Link
+          href="/"
+          target="_blank"
+          className="text-blue-600 hover:text-blue-700 hover:underline"
+        >
+          J&apos;accepte les conditions d&apos;utilisation
+        </Link>
+      </div>
+      <div>
+        {errors?.accept?.message && (
+          <span className="text-red-600 text-sm mt-1">
+            {errors.accept.message}
+          </span>
+        )}
       </div>
       <button type="submit">Créer</button>
     </form>
