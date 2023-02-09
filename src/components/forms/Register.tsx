@@ -1,23 +1,24 @@
 import { CiUser } from 'react-icons/ci'
-import { useForm } from 'react-hook-form'
+import { SubmitHandler, useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import validator from 'validator'
 import { AiFillLock, AiOutlineMail } from 'react-icons/ai'
 import { BsTelephone } from 'react-icons/bs'
 import { useEffect, useState } from 'react'
 import zxcvbn from 'zxcvbn'
 import Link from 'next/link'
+import axios from 'axios'
+import { toast } from 'react-toastify'
 import Input from '../inputs/input'
 
 const schema = z
   .object({
-    first_name: z
+    firstName: z
       .string()
       .min(2, 'Le prénom doit contenir au moins 2 caractères')
       .max(32, 'Le prénom doit contenir au plus 32 caractères')
       .regex(/^[a-zA-ZÀ-ÿ]+$/, 'Le prénom ne peut contenir que des lettres'),
-    last_name: z
+    lastName: z
       .string()
       .min(2, 'Le nom doit contenir au moins 2 caractères')
       .max(32, 'Le nom doit contenir au plus 32 caractères')
@@ -61,9 +62,16 @@ export default function Register() {
     setPasswordScore(validatePasswordStrength())
   }, [watch().password])
 
-  console.log('errors', errors)
-
-  const onSubmit = (data: FormSchemaType) => console.log(data)
+  const onSubmit: SubmitHandler<FormSchemaType> = async (values) => {
+    try {
+      const data = await axios.post('/api/auth/signup', {
+        ...values,
+      })
+      toast.success(data.data.message)
+    } catch (error) {
+      toast.error(error.response.data.message)
+    }
+  }
 
   const validatePasswordStrength = () => {
     const { password } = watch()
@@ -80,24 +88,24 @@ export default function Register() {
     <form className="my-8 text-sm" onSubmit={handleSubmit(onSubmit)}>
       <div className="gap-2 md:flex">
         <Input
-          name="first_name"
+          name="firstName"
           label="Prénom"
           type="text"
           Icon={CiUser}
           placeholder="David"
           register={register}
-          error={errors?.first_name?.message}
+          error={errors?.firstName?.message}
           disabled={isSubmitting}
           className="md:w-1/2"
         />
         <Input
-          name="last_name"
+          name="lastName"
           label="Nom"
           type="text"
           Icon={CiUser}
           placeholder="Durand"
           register={register}
-          error={errors?.last_name?.message}
+          error={errors?.lastName?.message}
           disabled={isSubmitting}
           className="md:w-1/2"
         />
@@ -174,7 +182,13 @@ export default function Register() {
           </span>
         )}
       </div>
-      <button type="submit">Créer</button>
+      <button
+        className="bg-blue-600 text-white w-full p-2 rounded-lg mt-2"
+        type="submit"
+        disabled={isSubmitting}
+      >
+        Créer
+      </button>
     </form>
   )
 }

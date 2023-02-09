@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import Register from '@/components/forms/Register'
+import Background from '@/components/Backgrounds/background'
 
 export default function Auth() {
   return (
@@ -22,6 +23,7 @@ export default function Auth() {
             <Register />
           </div>
         </div>
+        <Background image="register.png" />
       </div>
     </div>
   )
