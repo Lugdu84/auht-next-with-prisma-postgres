@@ -24,7 +24,7 @@ export default async function handler(
     if (userDb.emailVerified) {
       return res
         .status(400)
-        .json({ message: 'Vous avez déjà vérifié votre adresse mail' })
+        .json({ message: 'Votre adresse mail a déjà été vérifiée' })
     }
     await User.findByIdAndUpdate(userDb.id, {
       emailVerified: true,

@@ -25,9 +25,9 @@ export default function Activate({ token }: Props) {
   }
 
   return (
-    <div className="h-screen flex flex-col items-center justify-center space-y-2">
-      {error && <div className="text-red-500">{error}</div>}
-      {success && <div className="text-green-500">{success}</div>}
+    <div className=" bg-gradient-to-br from-gray-200 via-gray-400 to-gray-600 h-screen flex flex-col items-center justify-center space-y-2">
+      {error && <p className="text-red-500 text-xl">{error}</p>}
+      {success && <p className="text-green-500">{success}</p>}
       <ButtonWithAction title="Se connecter" onClick={signIn} />
     </div>
   )

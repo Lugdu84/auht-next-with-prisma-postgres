@@ -4,15 +4,58 @@ import GoogleProvider from 'next-auth/providers/google'
 import GithubProvider from 'next-auth/providers/github'
 import DiscordProvider from 'next-auth/providers/discord'
 import TwitterProvider from 'next-auth/providers/twitter'
+import CredentialsProvider from 'next-auth/providers/credentials'
 import { MongoDBAdapter } from '@next-auth/mongodb-adapter'
 import { JWT } from 'next-auth/jwt'
 // eslint-disable-next-line import/no-unresolved
 import { AdapterUser } from 'next-auth/adapters'
+import bcrypt from 'bcrypt'
 import clientPromise from '@/lib/mongodb'
+import dbConnect from '@/lib/connectDb'
+import MongoDbUser, { IUser } from '@/models/User'
 
 export default NextAuth({
   adapter: MongoDBAdapter(clientPromise),
   providers: [
+    CredentialsProvider({
+      name: 'Credentials',
+      credentials: {
+        email: {
+          label: 'Email',
+          type: 'text',
+          placeholder: 'exemple@gmail.com',
+        },
+        password: {
+          label: 'Password',
+          type: 'password',
+          placeholder: '********',
+        },
+      },
+      async authorize(credentials) {
+        await dbConnect()
+        const user: IUser | null = await MongoDbUser.findOne({
+          email: credentials?.email,
+        })
+        if (!user) {
+          throw new Error('Aucun utilisateur trouvé')
+        }
+        const isPasswordValid = await bcrypt.compare(
+          // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+          credentials!.password,
+          user.password
+        )
+        if (!isPasswordValid) {
+          throw new Error('Mot de passe incorrect')
+        }
+
+        if (!user.emailVerified) {
+          throw new Error(
+            'Veuillez activez votre compte, en cliquant sur le lien envoyé par mail'
+          )
+        }
+        return user
+      },
+    }),
     GoogleProvider({
       clientId: process.env.GOOGLE_ID as string,
       clientSecret: process.env.GOOGLE_SECRET as string,
@@ -52,11 +95,6 @@ export default NextAuth({
       profile?: Profile | undefined
       isNewUser?: boolean | undefined
     }) {
-      console.log('account in callback', account)
-      console.log('profile in callback', profile)
-      console.log('user in callback', user)
-      console.log('token in callback', token)
-      console.log('isNewUser in callback', isNewUser)
       const updatedToken = { ...token }
       if (user) {
         updatedToken.provider = account?.provider
@@ -65,7 +103,6 @@ export default NextAuth({
       return updatedToken
     },
     async session({ session, token }: { session: Session; token: JWT }) {
-      console.log('session in callback', session)
       const updatedSession = { ...session }
       if (session.user) {
         updatedSession.user.provider = token.provider as string
