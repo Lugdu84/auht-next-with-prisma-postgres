@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { AiFillGithub } from 'react-icons/ai'
 import { FaFacebook, FaLinkedin, FaYoutube } from 'react-icons/fa'
 import SocialLink from '@/components/buttons/socialLink'
+import ButtonWithAction from '@/components/buttons/buttonWithAction'
 
 export default function Home() {
   const { data: session } = useSession()
@@ -27,13 +28,7 @@ export default function Home() {
           <div className="flex flex-col justify-center items-center">
             <div className="w-full text-right">
               <div className="py-6 px-3">
-                <button
-                  className="bg-blue-500 hover:bg-blue-700 text-md uppercase font-bold px-8 py-2 rounded-md sm:mr-2 mb-1 ease-linear transition-all duration-150"
-                  onClick={() => signOut()}
-                  type="button"
-                >
-                  Se déconnecter
-                </button>
+                <ButtonWithAction title="Se déconnecter" onClick={signOut} />
               </div>
             </div>
             <div className="w-full flex justify-center">

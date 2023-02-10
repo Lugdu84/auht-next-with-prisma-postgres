@@ -1,6 +1,8 @@
-import axios from 'axios'
 import { NextPageContext } from 'next'
 import { useEffect, useState } from 'react'
+import axios from 'axios'
+import { signIn } from 'next-auth/react'
+import ButtonWithAction from '@/components/buttons/buttonWithAction'
 
 type Props = {
   token: string
@@ -16,17 +18,17 @@ export default function Activate({ token }: Props) {
   const activateAcccount = async () => {
     try {
       const { data } = await axios.put('/api/auth/activate', { token })
-      setSuccess(data)
+      setSuccess(data.message)
     } catch (err) {
-      setError((err as Error).message)
+      setError(err?.response?.data?.message)
     }
   }
 
   return (
-    <div>
+    <div className="h-screen flex flex-col items-center justify-center space-y-2">
       {error && <div className="text-red-500">{error}</div>}
       {success && <div className="text-green-500">{success}</div>}
-      <button type="button">Se connecter</button>
+      <ButtonWithAction title="Se connecter" onClick={signIn} />
     </div>
   )
 }
