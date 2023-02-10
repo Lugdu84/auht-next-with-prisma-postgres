@@ -4,6 +4,9 @@ import validator from 'validator'
 import bcrypt from 'bcrypt'
 import dbConnect from '@/lib/connectDb'
 import User from '@/models/User'
+import { createActivationToken } from '@/lib/tokens'
+import sendMail from '@/lib/sendMail'
+import activateTemplateEmail from '@/emailTemplates/activate'
 
 // eslint-disable-next-line consistent-return
 export default async function handler(
@@ -12,7 +15,6 @@ export default async function handler(
 ) {
   try {
     await dbConnect()
-    console.log('req.body', req.body)
     const { firstName, lastName, email, password, phone } = req.body
     if (!firstName || !lastName || !email || !password || !phone) {
       return res
@@ -37,13 +39,28 @@ export default async function handler(
         .json({ message: 'Le mot de passe doit avoir au moins 6 caractères' })
     }
     const cryptedPassword = await bcrypt.hash(password, 12)
+    const name = `${firstName} ${lastName}`
     const newUser = await User.create({
-      name: `${firstName} ${lastName}`,
+      name,
       email,
       password: cryptedPassword,
       phone,
     })
     await newUser.save()
+    const activationToken = createActivationToken({
+      // eslint-disable-next-line no-underscore-dangle
+      id: newUser._id.toString(),
+    })
+    const url = `${process.env.NEXTAUTH_URL}/activate/${activationToken}`
+    await sendMail(
+      email,
+      name,
+      '',
+      url,
+      'Activez votre compte',
+      activateTemplateEmail
+    )
+
     return res.status(201).json({
       message: 'Votre compte a été créé avec succès. Activez-le pour continuer',
     })

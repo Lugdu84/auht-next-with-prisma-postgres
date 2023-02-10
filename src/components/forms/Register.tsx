@@ -9,6 +9,7 @@ import zxcvbn from 'zxcvbn'
 import Link from 'next/link'
 import axios from 'axios'
 import { toast } from 'react-toastify'
+import BeatLoader from 'react-spinners/BeatLoader'
 import Input from '../inputs/input'
 
 const schema = z
@@ -53,6 +54,7 @@ export default function Register() {
     register,
     handleSubmit,
     watch,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm<FormSchemaType>({
     resolver: zodResolver(schema),
@@ -67,6 +69,7 @@ export default function Register() {
       const data = await axios.post('/api/auth/signup', {
         ...values,
       })
+      reset()
       toast.success(data.data.message)
     } catch (error) {
       toast.error(error.response.data.message)
@@ -83,6 +86,13 @@ export default function Register() {
     if (passwordScore < 4) return 'bg-yellow-400'
     return 'bg-green-500'
   }
+
+  // if (isSubmitting)
+  //   return (
+  //     <div className=" h-screen flex justify-center items-center">
+  //       <BeatLoader />
+  //     </div>
+  //   )
 
   return (
     <form className="my-8 text-sm" onSubmit={handleSubmit(onSubmit)}>
@@ -187,7 +197,7 @@ export default function Register() {
         type="submit"
         disabled={isSubmitting}
       >
-        Créer
+        {isSubmitting ? <BeatLoader color="white" /> : 'Créer'}
       </button>
     </form>
   )
