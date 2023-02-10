@@ -11,3 +11,6 @@ export const createResetToken = (payload: any) =>
   jwt.sign(payload, RESET_TOKEN_SECRET as string, {
     expiresIn: '1d',
   })
+
+export const verifyActivationToken = (token: string) =>
+  jwt.verify(token, ACTIVATION_TOKEN_SECRET as string)

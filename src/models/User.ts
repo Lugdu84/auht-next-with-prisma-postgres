@@ -33,6 +33,17 @@ const userSchema = new mongoose.Schema({
   },
 })
 
+export interface IUser {
+  id: string
+  name: string
+  image: string
+  email: string
+  password: string
+  phone: string
+  role: string
+  emailVerified: boolean
+}
+
 const User = mongoose.models.User || mongoose.model('User', userSchema)
 
 export default User
