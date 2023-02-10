@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from 'react'
 import { IconBaseProps } from 'react-icons'
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai'
