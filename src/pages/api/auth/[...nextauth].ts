@@ -39,6 +39,9 @@ export default NextAuth({
         if (!user) {
           throw new Error('Mot de passe ou adresse email incorrect')
         }
+        if (user.emailVerified === null) {
+          throw new Error('Veuillez vous connecter avec votre compte Google')
+        }
         const isPasswordValid = await bcrypt.compare(
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
           credentials!.password,
