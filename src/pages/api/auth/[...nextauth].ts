@@ -37,7 +37,7 @@ export default NextAuth({
           email: credentials?.email,
         })
         if (!user) {
-          throw new Error('Aucun utilisateur trouvé')
+          throw new Error("Ce compte n'existe pas")
         }
         const isPasswordValid = await bcrypt.compare(
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -45,7 +45,7 @@ export default NextAuth({
           user.password
         )
         if (!isPasswordValid) {
-          throw new Error('Mot de passe incorrect')
+          throw new Error('Mot de passe ou adresse email incorrect')
         }
 
         if (!user.emailVerified) {
