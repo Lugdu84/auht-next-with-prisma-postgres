@@ -95,110 +95,124 @@ export default function Register() {
   //   )
 
   return (
-    <form className="my-8 text-sm" onSubmit={handleSubmit(onSubmit)}>
-      <div className="gap-2 md:flex">
-        <Input
-          name="firstName"
-          label="Prénom"
-          type="text"
-          Icon={CiUser}
-          placeholder="David"
-          register={register}
-          error={errors?.firstName?.message}
-          disabled={isSubmitting}
-          className="md:w-1/2"
-        />
-        <Input
-          name="lastName"
-          label="Nom"
-          type="text"
-          Icon={CiUser}
-          placeholder="Durand"
-          register={register}
-          error={errors?.lastName?.message}
-          disabled={isSubmitting}
-          className="md:w-1/2"
-        />
-      </div>
-      <Input
-        name="email"
-        label="Email"
-        type="text"
-        Icon={AiOutlineMail}
-        placeholder="monadresse@adresse.com"
-        register={register}
-        error={errors?.email?.message}
-        disabled={isSubmitting}
-      />
-      <Input
-        name="phone"
-        label="Numéro de téléphone"
-        type="number"
-        Icon={BsTelephone}
-        placeholder="06-34-41-89-03"
-        register={register}
-        error={errors?.phone?.message}
-        disabled={isSubmitting}
-      />
-      <Input
-        name="password"
-        label="Mot de passe"
-        type="password"
-        Icon={AiFillLock}
-        placeholder="Votre mot de passe"
-        register={register}
-        error={errors?.password?.message}
-        disabled={isSubmitting}
-      />
-      {watch().password && (
-        <div className="flex mt-2">
-          {Array.from(Array(5).keys()).map((span, i) => (
-            // eslint-disable-next-line react/no-array-index-key
-            <span className=" w-1/5 px-1" key={i}>
-              <div className={`h-2 rounded-xl ${passwordStrong()}`} />
-            </span>
-          ))}
-        </div>
-      )}
-      <Input
-        name="confirm_password"
-        label="Confirmer votre mot de passe"
-        type="password"
-        Icon={AiFillLock}
-        placeholder="Votre mot de passe"
-        register={register}
-        error={errors?.confirm_password?.message}
-        disabled={isSubmitting}
-      />
-      <div className="flex items-center mt-3">
-        <input
-          type="checkbox"
-          id="accept"
-          className="mr-2 focus:ring-0 rounded"
-          {...register('accept')}
-        />
+    <div className="w-full px-12 py-4">
+      <h2 className="text-center text-2xl font-bold tracking-wide text-gray-800">
+        S&apos;inscrire
+      </h2>
+      <p className="text-center text-sm text-gray-600 mt-2">
+        Vous avez déjà un compte ?
         <Link
-          href="/"
-          target="_blank"
-          className="text-blue-600 hover:text-blue-700 hover:underline"
+          href="/auth"
+          className="text-blue-600 hover:text-blue-700 hover:underline cursor-pointer px-1"
         >
-          J&apos;accepte les conditions d&apos;utilisation
+          Connectez-vous
         </Link>
-      </div>
-      <div>
-        {errors?.accept?.message && (
-          <span className="text-red-600 text-sm mt-1">
-            {errors.accept.message}
-          </span>
+      </p>
+      <form className="my-8 text-sm" onSubmit={handleSubmit(onSubmit)}>
+        <div className="gap-2 md:flex">
+          <Input
+            name="firstName"
+            label="Prénom"
+            type="text"
+            Icon={CiUser}
+            placeholder="David"
+            register={register}
+            error={errors?.firstName?.message}
+            disabled={isSubmitting}
+            className="md:w-1/2"
+          />
+          <Input
+            name="lastName"
+            label="Nom"
+            type="text"
+            Icon={CiUser}
+            placeholder="Durand"
+            register={register}
+            error={errors?.lastName?.message}
+            disabled={isSubmitting}
+            className="md:w-1/2"
+          />
+        </div>
+        <Input
+          name="email"
+          label="Email"
+          type="text"
+          Icon={AiOutlineMail}
+          placeholder="monadresse@adresse.com"
+          register={register}
+          error={errors?.email?.message}
+          disabled={isSubmitting}
+        />
+        <Input
+          name="phone"
+          label="Numéro de téléphone"
+          type="number"
+          Icon={BsTelephone}
+          placeholder="06-34-41-89-03"
+          register={register}
+          error={errors?.phone?.message}
+          disabled={isSubmitting}
+        />
+        <Input
+          name="password"
+          label="Mot de passe"
+          type="password"
+          Icon={AiFillLock}
+          placeholder="Votre mot de passe"
+          register={register}
+          error={errors?.password?.message}
+          disabled={isSubmitting}
+        />
+        {watch().password && (
+          <div className="flex mt-2">
+            {Array.from(Array(5).keys()).map((span, i) => (
+              // eslint-disable-next-line react/no-array-index-key
+              <span className=" w-1/5 px-1" key={i}>
+                <div className={`h-2 rounded-xl ${passwordStrong()}`} />
+              </span>
+            ))}
+          </div>
         )}
-      </div>
-      <button
-        className="bg-blue-600 text-white w-full p-2 rounded-lg mt-2"
-        type="submit"
-        disabled={isSubmitting}
-      >
-        {isSubmitting ? <BeatLoader color="white" /> : 'Créer'}
-      </button>
-    </form>
+        <Input
+          name="confirm_password"
+          label="Confirmer votre mot de passe"
+          type="password"
+          Icon={AiFillLock}
+          placeholder="Votre mot de passe"
+          register={register}
+          error={errors?.confirm_password?.message}
+          disabled={isSubmitting}
+        />
+        <div className="flex items-center mt-3">
+          <input
+            type="checkbox"
+            id="accept"
+            className="mr-2 focus:ring-0 rounded"
+            {...register('accept')}
+          />
+          <Link
+            href="/"
+            target="_blank"
+            className="text-blue-600 hover:text-blue-700 hover:underline"
+          >
+            J&apos;accepte les conditions d&apos;utilisation
+          </Link>
+        </div>
+        <div>
+          {errors?.accept?.message && (
+            <span className="text-red-600 text-sm mt-1">
+              {errors.accept.message}
+            </span>
+          )}
+        </div>
+        <button
+          className="bg-blue-600 text-white w-full p-2 rounded-lg mt-2"
+          type="submit"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? <BeatLoader color="white" /> : 'Créer'}
+        </button>
+      </form>
+    </div>
   )
 }

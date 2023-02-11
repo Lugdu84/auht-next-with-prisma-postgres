@@ -2,6 +2,7 @@ import { NextPageContext } from 'next'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
 import { signIn } from 'next-auth/react'
+import { useRouter } from 'next/router'
 import ButtonWithAction from '@/components/buttons/buttonWithAction'
 
 type Props = {
@@ -9,6 +10,7 @@ type Props = {
 }
 
 export default function Activate({ token }: Props) {
+  const router = useRouter()
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
   useEffect(() => {
@@ -28,7 +30,10 @@ export default function Activate({ token }: Props) {
     <div className=" bg-gradient-to-br from-gray-200 via-gray-400 to-gray-600 h-screen flex flex-col items-center justify-center space-y-2">
       {error && <p className="text-red-500 text-xl">{error}</p>}
       {success && <p className="text-green-500">{success}</p>}
-      <ButtonWithAction title="Se connecter" onClick={signIn} />
+      <ButtonWithAction
+        title="Se connecter"
+        onClick={() => router.push('/auth')}
+      />
     </div>
   )
 }
