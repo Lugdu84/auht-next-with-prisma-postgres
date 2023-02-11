@@ -1,8 +1,8 @@
 import { NextPageContext } from 'next'
 import { useEffect, useState } from 'react'
 import axios from 'axios'
-import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/router'
+// eslint-disable-next-line import/no-unresolved
 import ButtonWithAction from '@/components/buttons/buttonWithAction'
 
 type Props = {

@@ -2,12 +2,11 @@ import { SubmitHandler, useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { AiFillLock, AiOutlineMail } from 'react-icons/ai'
-import zxcvbn from 'zxcvbn'
-import Link from 'next/link'
 import { toast } from 'react-toastify'
 import BeatLoader from 'react-spinners/BeatLoader'
 import { useRouter } from 'next/router'
 import { signIn } from 'next-auth/react'
+import Link from 'next/link'
 import Input from '../inputs/input'
 
 const schema = z.object({
@@ -30,8 +29,6 @@ export default function Login({ callbackUrl, csrfToken }: IProps) {
   const {
     register,
     handleSubmit,
-    watch,
-    reset,
     formState: { errors, isSubmitting },
   } = useForm<FormSchemaType>({
     resolver: zodResolver(schema),
@@ -112,6 +109,12 @@ export default function Login({ callbackUrl, csrfToken }: IProps) {
           error={errors?.password?.message}
           disabled={isSubmitting}
         />
+        <div className="mt-2">
+          <Link className=" text-blue-600 hover:underline" href="/forgot">
+            Mot de passe oublié ?
+          </Link>
+        </div>
+
         <button
           className="bg-blue-600 text-white w-full p-2 rounded-lg mt-4"
           type="submit"

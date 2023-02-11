@@ -2,9 +2,10 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 // eslint-disable-next-line import/no-extraneous-dependencies
 import { JwtPayload } from 'jsonwebtoken'
+import bcrypt from 'bcrypt'
 import dbConnect from '@/lib/connectDb'
 import User, { IUser } from '@/models/User'
-import { verifyActivationToken } from '@/lib/tokens'
+import { verifyResetToken } from '@/lib/tokens'
 
 // eslint-disable-next-line consistent-return
 export default async function handler(
@@ -13,26 +14,27 @@ export default async function handler(
 ) {
   try {
     await dbConnect()
-    const { token } = req.body
-    const userToken = verifyActivationToken(token)
+    const { token, password } = req.body
+    const userToken = verifyResetToken(token)
     const userDb: IUser | null = await User.findById(
       (userToken as JwtPayload).id
     )
     if (!userDb) {
       return res.status(400).json({ message: "Ce compte n'existe pas" })
     }
-    if (userDb.emailVerified) {
+    if (password.length < 6) {
       return res
         .status(400)
-        .json({ message: 'Votre adresse mail a déjà été vérifiée' })
+        .json({ message: 'Le mot de passe doit avoir au moins 6 caractères' })
     }
+    const cryptedPassword = await bcrypt.hash(password, 12)
     // eslint-disable-next-line no-underscore-dangle
     await User.findByIdAndUpdate(userDb._id, {
-      emailVerified: true,
+      password: cryptedPassword,
     })
     res.status(200).json({
       message:
-        'Votre compte a été activé. Vous pouvez maintenant vous connecter et profiter de toutes les fonctionalités du site',
+        'Votre mot de passe a été changé avec succès. Vous pouvez maintenant vous connecter avec votre nouveau mot de passe',
     })
   } catch (error) {
     res.status(500).json({ success: false, error })

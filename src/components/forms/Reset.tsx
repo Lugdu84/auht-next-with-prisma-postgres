@@ -1,45 +1,22 @@
-import { CiUser } from 'react-icons/ci'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { AiFillLock, AiOutlineMail } from 'react-icons/ai'
-import { BsTelephone } from 'react-icons/bs'
+import { AiFillLock } from 'react-icons/ai'
 import { useEffect, useState } from 'react'
 import zxcvbn from 'zxcvbn'
 import Link from 'next/link'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import BeatLoader from 'react-spinners/BeatLoader'
+import { useRouter } from 'next/router'
 import Input from '../inputs/input'
 
 const schema = z
   .object({
-    firstName: z
-      .string()
-      .min(2, 'Le prénom doit contenir au moins 2 caractères')
-      .max(32, 'Le prénom doit contenir au plus 32 caractères')
-      .regex(/^[a-zA-ZÀ-ÿ]+$/, 'Le prénom ne peut contenir que des lettres'),
-    lastName: z
-      .string()
-      .min(2, 'Le nom doit contenir au moins 2 caractères')
-      .max(32, 'Le nom doit contenir au plus 32 caractères')
-      .regex(/^[a-zA-ZÀ-ÿ]+$/, 'Le nom ne peut contenir que des lettres'),
-    email: z.string().email("L'email doit être valide"),
-    phone: z
-      .string()
-      .regex(
-        /^0[67]([-. ]?[0-9]{2}){4}$/,
-        'Le numéro de téléphone est invalide'
-      ),
     password: z
       .string()
       .min(6, 'Le mot de passe doit contenir au moins 8 caractères'),
     confirm_password: z.string(),
-    accept: z.literal(true, {
-      errorMap: () => ({
-        message: "Vous devez accepter les conditions d'utilisation",
-      }),
-    }),
   })
   .refine((data) => data.password === data.confirm_password, {
     message: 'Les mots de passe ne correspondent pas',
@@ -48,13 +25,17 @@ const schema = z
 
 type FormSchemaType = z.infer<typeof schema>
 
-export default function Register() {
+interface IProps {
+  token: string
+}
+
+export default function ResetForm({ token }: IProps) {
+  const router = useRouter()
   const [passwordScore, setPasswordScore] = useState(0)
   const {
     register,
     handleSubmit,
     watch,
-    reset,
     formState: { errors, isSubmitting },
   } = useForm<FormSchemaType>({
     resolver: zodResolver(schema),
@@ -66,11 +47,12 @@ export default function Register() {
 
   const onSubmit: SubmitHandler<FormSchemaType> = async (values) => {
     try {
-      const data = await axios.post('/api/auth/signup', {
-        ...values,
+      const data = await axios.post('/api/auth/reset', {
+        password: values.password,
+        token,
       })
-      reset()
       toast.success(data.data.message)
+      router.push('/auth')
     } catch (error) {
       toast.error(error.response.data.message)
     }
@@ -90,10 +72,10 @@ export default function Register() {
   return (
     <div className="w-full px-12 py-4">
       <h2 className="text-center text-2xl font-bold tracking-wide text-gray-800">
-        Créer un compte
+        Modifiez votre mot de passe
       </h2>
       <p className="text-center text-sm text-gray-600 mt-2">
-        Vous avez déjà un compte ?
+        Connectez-vous sans le changer ?
         <Link
           href="/auth"
           className="text-blue-600 hover:text-blue-700 hover:underline cursor-pointer px-1"
@@ -102,50 +84,6 @@ export default function Register() {
         </Link>
       </p>
       <form className="my-8 text-sm" onSubmit={handleSubmit(onSubmit)}>
-        <div className="gap-2 md:flex">
-          <Input
-            name="firstName"
-            label="Prénom"
-            type="text"
-            Icon={CiUser}
-            placeholder="David"
-            register={register}
-            error={errors?.firstName?.message}
-            disabled={isSubmitting}
-            className="md:w-1/2"
-          />
-          <Input
-            name="lastName"
-            label="Nom"
-            type="text"
-            Icon={CiUser}
-            placeholder="Durand"
-            register={register}
-            error={errors?.lastName?.message}
-            disabled={isSubmitting}
-            className="md:w-1/2"
-          />
-        </div>
-        <Input
-          name="email"
-          label="Email"
-          type="text"
-          Icon={AiOutlineMail}
-          placeholder="monadresse@adresse.com"
-          register={register}
-          error={errors?.email?.message}
-          disabled={isSubmitting}
-        />
-        <Input
-          name="phone"
-          label="Numéro de téléphone"
-          type="number"
-          Icon={BsTelephone}
-          placeholder="06-34-41-89-03"
-          register={register}
-          error={errors?.phone?.message}
-          disabled={isSubmitting}
-        />
         <Input
           name="password"
           label="Mot de passe"
@@ -176,34 +114,16 @@ export default function Register() {
           error={errors?.confirm_password?.message}
           disabled={isSubmitting}
         />
-        <div className="flex items-center mt-3">
-          <input
-            type="checkbox"
-            id="accept"
-            className="mr-2 focus:ring-0 rounded"
-            {...register('accept')}
-          />
-          <Link
-            href="/"
-            target="_blank"
-            className="text-blue-600 hover:text-blue-700 hover:underline"
-          >
-            J&apos;accepte les conditions d&apos;utilisation
-          </Link>
-        </div>
-        <div>
-          {errors?.accept?.message && (
-            <span className="text-red-600 text-sm mt-1">
-              {errors.accept.message}
-            </span>
-          )}
-        </div>
         <button
           className="bg-blue-600 text-white w-full p-2 rounded-lg mt-2"
           type="submit"
           disabled={isSubmitting}
         >
-          {isSubmitting ? <BeatLoader color="white" /> : 'Créer un compte'}
+          {isSubmitting ? (
+            <BeatLoader color="white" />
+          ) : (
+            'Modifier votre mot de passe'
+          )}
         </button>
       </form>
     </div>

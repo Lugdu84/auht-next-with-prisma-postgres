@@ -1,9 +1,9 @@
-import NextAuth, { Account, Profile, Session, User } from 'next-auth'
+/* eslint-disable import/no-unresolved */
+import NextAuth, { Account, Session, User } from 'next-auth'
 import FacebookProvider from 'next-auth/providers/facebook'
 import GoogleProvider from 'next-auth/providers/google'
 import GithubProvider from 'next-auth/providers/github'
 import DiscordProvider from 'next-auth/providers/discord'
-import TwitterProvider from 'next-auth/providers/twitter'
 import CredentialsProvider from 'next-auth/providers/credentials'
 import { MongoDBAdapter } from '@next-auth/mongodb-adapter'
 import { JWT } from 'next-auth/jwt'
@@ -12,7 +12,7 @@ import { AdapterUser } from 'next-auth/adapters'
 import bcrypt from 'bcrypt'
 import clientPromise from '@/lib/mongodb'
 import dbConnect from '@/lib/connectDb'
-import MongoDbUser, { IUser } from '@/models/User'
+import MongoDbUser from '@/models/User'
 
 export default NextAuth({
   adapter: MongoDBAdapter(clientPromise),
@@ -33,7 +33,7 @@ export default NextAuth({
       },
       async authorize(credentials) {
         await dbConnect()
-        const user: IUser | null = await MongoDbUser.findOne({
+        const user = await MongoDbUser.findOne({
           email: credentials?.email,
         })
         if (!user) {
@@ -72,10 +72,6 @@ export default NextAuth({
       clientId: process.env.DISCORD_CLIENT_ID as string,
       clientSecret: process.env.DISCORD_SECRET as string,
     }),
-    TwitterProvider({
-      clientId: process.env.TWITTER_CLIENT_ID as string,
-      clientSecret: process.env.TWITTER_CLIENT_SECRET as string,
-    }),
   ],
   secret: process.env.NEXTAUTH_SECRET as string,
   session: {
@@ -90,14 +86,10 @@ export default NextAuth({
       token,
       user,
       account,
-      profile,
-      isNewUser,
     }: {
       token: JWT
       user?: User | AdapterUser | undefined
       account?: Account | null | undefined
-      profile?: Profile | undefined
-      isNewUser?: boolean | undefined
     }) {
       const updatedToken = { ...token }
       if (user) {
