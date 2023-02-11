@@ -12,6 +12,8 @@ const sendMail = async (
   const {
     MAILING_EMAIL,
     MAILING_PASSWORD,
+    MAILING_PASSWORD_TEST,
+    MAILING_EMAIL_TEST,
     // SMTP_HOST,
     // SMTP_PORT,
     // SMTP_EMAIL,
@@ -29,15 +31,28 @@ const sendMail = async (
   //   },
   // }
 
-  const gmailConfig = {
-    service: 'gmail',
-    auth: {
-      user: MAILING_EMAIL,
-      pass: MAILING_PASSWORD,
-    },
+  let mailConfig
+
+  if (process.env.NODE_ENV === 'production') {
+    mailConfig = {
+      service: 'gmail',
+      auth: {
+        user: MAILING_EMAIL,
+        pass: MAILING_PASSWORD,
+      },
+    }
+  } else {
+    mailConfig = {
+      host: 'smtp.ethereal.email',
+      port: 587,
+      auth: {
+        user: MAILING_EMAIL_TEST,
+        pass: MAILING_PASSWORD_TEST,
+      },
+    }
   }
 
-  const transporter = await nodemailer.createTransport(gmailConfig)
+  const transporter = await nodemailer.createTransport(mailConfig)
 
   const data = handlebars.compile(template)
   const replacements = {
@@ -70,6 +85,7 @@ const sendMail = async (
         reject(error)
       } else {
         resolve(info)
+        console.log('Preview URL : ', nodemailer.getTestMessageUrl(info))
       }
     })
   })
