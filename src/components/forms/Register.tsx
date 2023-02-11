@@ -87,13 +87,6 @@ export default function Register() {
     return 'bg-green-500'
   }
 
-  // if (isSubmitting)
-  //   return (
-  //     <div className=" h-screen flex justify-center items-center">
-  //       <BeatLoader />
-  //     </div>
-  //   )
-
   return (
     <div className="w-full px-12 py-4">
       <h2 className="text-center text-2xl font-bold tracking-wide text-gray-800">

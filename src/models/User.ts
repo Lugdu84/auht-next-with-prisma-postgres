@@ -7,7 +7,7 @@ const userSchema = new mongoose.Schema({
   },
   image: {
     type: String,
-    default: '',
+    default: '/auth/user.png',
   },
   email: {
     type: String,

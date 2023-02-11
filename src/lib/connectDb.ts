@@ -33,16 +33,12 @@ async function dbConnect() {
     cached.promise = mongoose
       .connect(DATABASE_URL, options)
       // eslint-disable-next-line no-shadow
-      .then((mongoose) => {
-        console.log('mongoose connected')
-        return mongoose
-      })
+      .then((mongoose) => mongoose)
       .catch((error) => {
-        console.error(error as Error)
+        throw new Error(error)
       })
   }
   cached.conn = await cached.promise
-  console.log(cached.conn)
   return cached.conn
 }
 

@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { toast } from 'react-toastify'
 import BeatLoader from 'react-spinners/BeatLoader'
 import { useRouter } from 'next/router'
+import { signIn } from 'next-auth/react'
 import Input from '../inputs/input'
 
 const schema = z.object({
@@ -18,7 +19,12 @@ const schema = z.object({
 
 type FormSchemaType = z.infer<typeof schema>
 
-export default function Login() {
+interface IProps {
+  callbackUrl: string
+  csrfToken: string
+}
+
+export default function Login({ callbackUrl, csrfToken }: IProps) {
   const router = useRouter()
   const { pathname } = router
   const {
@@ -31,7 +37,31 @@ export default function Login() {
     resolver: zodResolver(schema),
   })
 
-  const onSubmit: SubmitHandler<FormSchemaType> = async (values) => {}
+  const onSubmit: SubmitHandler<FormSchemaType> = async (values) => {
+    // try {
+    //   await signIn('credentials', {
+    //     redirect: true,
+    //     email: values.email,
+    //     password: values.password,
+    //     callbackUrl,
+    //   })
+    //   toast.success('Vous êtes connecté !')
+    // } catch (error) {
+    //   toast.error(error)
+    // }
+    const res = await signIn('credentials', {
+      redirect: false,
+      email: values.email,
+      password: values.password,
+      callbackUrl,
+    })
+    if (res?.error) {
+      toast.error(res.error)
+    } else {
+      toast.success('Vous êtes connecté !')
+      router.push(callbackUrl)
+    }
+  }
 
   return (
     <div className="w-full px-12 py-4">
@@ -55,7 +85,13 @@ export default function Login() {
           Inscrivez-vous
         </button>
       </p>
-      <form className="my-8 text-sm" onSubmit={handleSubmit(onSubmit)}>
+      <form
+        method="post"
+        action="/api/auth/signin/email"
+        className="my-8 text-sm"
+        onSubmit={handleSubmit(onSubmit)}
+      >
+        <input type="hidden" name="csrfToken" defaultValue={csrfToken} />
         <Input
           name="email"
           label="Email"

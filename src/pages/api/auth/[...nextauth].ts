@@ -81,6 +81,10 @@ export default NextAuth({
   session: {
     strategy: 'jwt',
   },
+  pages: {
+    signIn: '/auth',
+    error: '/auth',
+  },
   callbacks: {
     async jwt({
       token,
