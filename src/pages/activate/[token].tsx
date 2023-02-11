@@ -15,7 +15,7 @@ export default function Activate({ token }: Props) {
   const [success, setSuccess] = useState('')
   useEffect(() => {
     activateAcccount()
-  }, [token])
+  }, [])
 
   const activateAcccount = async () => {
     try {
@@ -25,7 +25,7 @@ export default function Activate({ token }: Props) {
       setError(err?.response?.data?.message)
     }
   }
-
+  // TODO: error and success messages together
   return (
     <div className=" bg-gradient-to-br from-gray-200 via-gray-400 to-gray-600 h-screen flex flex-col items-center justify-center space-y-2">
       {error && <p className="text-red-500 text-xl">{error}</p>}

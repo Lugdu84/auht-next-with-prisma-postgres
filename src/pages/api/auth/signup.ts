@@ -38,6 +38,7 @@ export default async function handler(
         .status(400)
         .json({ message: 'Le mot de passe doit avoir au moins 6 caractères' })
     }
+    User.watch().on('change', (data) => console.log(data))
     const cryptedPassword = await bcrypt.hash(password, 12)
     const name = `${firstName} ${lastName}`
     const newUser = await User.create({
