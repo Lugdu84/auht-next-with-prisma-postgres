@@ -26,7 +26,7 @@ export default function Auth({
           {tab === 'signin' ? (
             <Login callbackUrl={callbackUrl} csrfToken={csrfToken} />
           ) : (
-            <Register />
+            <Register callbackUrl={callbackUrl} />
           )}
           <div className=" w-full flex items-center justify-between px-12 ">
             <div className="w-full h-[1px] bg-gray-300 " />

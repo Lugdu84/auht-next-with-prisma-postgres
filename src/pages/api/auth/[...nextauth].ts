@@ -51,12 +51,12 @@ export default NextAuth({
         if (!isPasswordValid) {
           throw new Error('Mot de passe ou adresse email incorrect')
         }
-
-        if (!user.emailVerified) {
-          throw new Error(
-            'Veuillez activez votre compte, en cliquant sur le lien envoyé par mail'
-          )
-        }
+        // Deactivated because we don't need email verification
+        // if (!user.emailVerified) {
+        //   throw new Error(
+        //     'Veuillez activez votre compte, en cliquant sur le lien envoyé par mail'
+        //   )
+        // }
         return user
       },
     }),

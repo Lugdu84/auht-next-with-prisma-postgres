@@ -74,6 +74,7 @@ export default function Login({ callbackUrl, csrfToken }: IProps) {
               pathname,
               query: {
                 tab: 'signup',
+                callbackUrl,
               },
             })
           }}

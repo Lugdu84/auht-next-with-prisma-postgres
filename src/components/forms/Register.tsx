@@ -10,6 +10,7 @@ import Link from 'next/link'
 import axios from 'axios'
 import { toast } from 'react-toastify'
 import BeatLoader from 'react-spinners/BeatLoader'
+import { signIn } from 'next-auth/react'
 import Input from '../inputs/input'
 
 const schema = z
@@ -48,13 +49,16 @@ const schema = z
 
 type FormSchemaType = z.infer<typeof schema>
 
-export default function Register() {
+interface IProps {
+  callbackUrl: string
+}
+
+export default function Register({ callbackUrl }: IProps) {
   const [passwordScore, setPasswordScore] = useState(0)
   const {
     register,
     handleSubmit,
     watch,
-    reset,
     formState: { errors, isSubmitting },
   } = useForm<FormSchemaType>({
     resolver: zodResolver(schema),
@@ -69,7 +73,12 @@ export default function Register() {
       const data = await axios.post('/api/auth/signup', {
         ...values,
       })
-      reset()
+      await signIn('credentials', {
+        redirect: true,
+        email: values.email,
+        password: values.password,
+        callbackUrl,
+      })
       toast.success(data.data.message)
     } catch (error) {
       toast.error(error.response.data.message)
@@ -95,7 +104,12 @@ export default function Register() {
       <p className="text-center text-sm text-gray-600 mt-2">
         Vous avez déjà un compte ?
         <Link
-          href="/auth"
+          href={{
+            pathname: '/auth',
+            query: {
+              callbackUrl,
+            },
+          }}
           className="text-blue-600 hover:text-blue-700 hover:underline cursor-pointer px-1"
         >
           Connectez-vous
