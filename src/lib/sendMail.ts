@@ -14,31 +14,31 @@ const sendMail = async (
     MAILING_PASSWORD,
     MAILING_PASSWORD_TEST,
     MAILING_EMAIL_TEST,
-    // SMTP_HOST,
-    // SMTP_PORT,
-    // SMTP_EMAIL,
-    // SMTP_PASSWORD,
+    SMTP_HOST,
+    SMTP_PORT,
+    SMTP_USER,
+    SMTP_PASSWORD,
   } = process.env
 
   // --------create transporter----------------
-  // const mailConfig = {
-  //   host: SMTP_HOST,
-  //   port: Number(SMTP_PORT),
-  //   secure: false,
-  //   auth: {
-  //     user: SMTP_EMAIL,
-  //     pass: SMTP_PASSWORD,
-  //   },
-  // }
 
   let mailConfig
 
   if (process.env.NODE_ENV === 'production') {
+    // mailConfig = {
+    //   service: 'gmail',
+    //   auth: {
+    //     user: MAILING_EMAIL,
+    //     pass: MAILING_PASSWORD,
+    //   },
+    // }
     mailConfig = {
-      service: 'gmail',
+      host: SMTP_HOST,
+      port: Number(SMTP_PORT),
+      secure: false,
       auth: {
-        user: MAILING_EMAIL,
-        pass: MAILING_PASSWORD,
+        user: SMTP_USER,
+        pass: SMTP_PASSWORD,
       },
     }
   } else {

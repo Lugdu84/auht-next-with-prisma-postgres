@@ -15,6 +15,7 @@ import dbConnect from '@/lib/connectDb'
 import MongoDbUser from '@/models/User'
 
 export default NextAuth({
+  // adapter: for MongodDB and providers: for social login
   adapter: MongoDBAdapter(clientPromise),
   providers: [
     CredentialsProvider({
