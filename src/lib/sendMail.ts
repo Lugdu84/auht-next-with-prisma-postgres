@@ -11,7 +11,7 @@ const sendMail = async (
 ) => {
   const {
     MAILING_EMAIL,
-    MAILING_PASSWORD,
+    // MAILING_PASSWORD,
     MAILING_PASSWORD_TEST,
     MAILING_EMAIL_TEST,
     SMTP_HOST,
