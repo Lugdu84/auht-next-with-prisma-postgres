@@ -9,7 +9,7 @@ export default async function middleware(req: NextRequest) {
     secret: process.env.NEXTAUTH_SECRET,
     secureCookie: process.env.NODE_ENV === 'production',
   })
-  console.log('session in middleware', session)
+  // console.log('session in middleware', session)
   if (pathname === '/') {
     if (!session) {
       return NextResponse.redirect(`${origin}/auth`)
@@ -19,6 +19,13 @@ export default async function middleware(req: NextRequest) {
     if (session) {
       return NextResponse.redirect(`${origin}`)
     }
+  }
+
+  if (pathname.startsWith('/lists')) {
+    if (session) {
+      return NextResponse.next()
+    }
+    return NextResponse.redirect(`${origin}/auth`)
   }
   if (pathname.startsWith('/admin')) {
     if (session) {

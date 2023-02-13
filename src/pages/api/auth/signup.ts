@@ -4,9 +4,6 @@ import validator from 'validator'
 import bcrypt from 'bcrypt'
 import dbConnect from '@/lib/connectDb'
 import User from '@/models/User'
-import { createActivationToken } from '@/lib/tokens'
-import sendMail from '@/lib/sendMail'
-import activateTemplateEmail from '@/emailTemplates/activate'
 
 // eslint-disable-next-line consistent-return
 export default async function handler(
@@ -42,29 +39,40 @@ export default async function handler(
     // User.watch().on('change', (data) => console.log(data))
     const cryptedPassword = await bcrypt.hash(password, 12)
     const name = `${firstName} ${lastName}`
-    const newUser = await User.create({
+
+    await User.create({
       name,
       email,
       password: cryptedPassword,
       phone,
     })
-    await newUser.save()
-    const activationToken = createActivationToken({
-      // eslint-disable-next-line no-underscore-dangle
-      id: newUser._id.toString(),
-    })
-    const url = `${process.env.NEXTAUTH_URL}/activate/${activationToken}`
-    await sendMail(
-      email,
-      name,
-      '',
-      url,
-      'Activez votre compte',
-      activateTemplateEmail
-    )
+    // const list = await List.create({
+    //   name: `La  première liste de ${name} `,
+    //   user: newUser,
+    // })
+    // newUser.lists.push(list)
+    // newUser.save()
+    // const newUserWithList = await User.findOne({ email }).populate('lists')
+    // console.log('newUser in signup after push', newUserWithList)
+    // eslint-disable-next-line no-underscore-dangle
+    // await newUser.save()
+    // Desactiver l'envoi de mail pour l'instant
+    // const activationToken = createActivationToken({
+    //   // eslint-disable-next-line no-underscore-dangle
+    //   id: newUser._id.toString(),
+    // })
+    // const url = `${process.env.NEXTAUTH_URL}/activate/${activationToken}`
+    // await sendMail(
+    //   email,
+    //   name,
+    //   '',
+    //   url,
+    //   'Activez votre compte',
+    //   activateTemplateEmail
+    // )
 
     return res.status(201).json({
-      message: 'Votre compte a été créé avec succès. Activez-le pour continuer',
+      message: 'Votre compte a été créé avec succès',
     })
   } catch (error) {
     res.status(500).json({ success: false, error })

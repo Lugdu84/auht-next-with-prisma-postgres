@@ -1,11 +1,13 @@
 import Head from 'next/head'
-import { useSession, signIn, signOut, getSession } from 'next-auth/react'
+import { useSession, signOut, getSession } from 'next-auth/react'
 import { NextPageContext } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import { AiFillGithub } from 'react-icons/ai'
 import { FaFacebook, FaLinkedin, FaYoutube } from 'react-icons/fa'
+// eslint-disable-next-line import/no-unresolved
 import SocialLink from '@/components/buttons/socialLink'
+// eslint-disable-next-line import/no-unresolved
 import ButtonWithAction from '@/components/buttons/buttonWithAction'
 
 export default function Home() {
@@ -28,6 +30,12 @@ export default function Home() {
           <div className="flex flex-col justify-center items-center">
             <div className="w-full text-right">
               <div className="py-6 px-3">
+                <Link
+                  className="bg-blue-600 text-white hover:bg-blue-800 text-md uppercase font-bold px-8 py-2 rounded-md sm:mr-2 mb-1 ease-linear transition-all duration-150"
+                  href="/lists"
+                >
+                  Mes litses
+                </Link>
                 <ButtonWithAction title="Se déconnecter" onClick={signOut} />
               </div>
             </div>
