@@ -1,13 +1,15 @@
 import jwt from 'jsonwebtoken'
 
+type IPayload = string | Buffer | object
+
 const { ACTIVATION_TOKEN_SECRET, RESET_TOKEN_SECRET } = process.env
 
-export const createActivationToken = (payload: any) =>
+export const createActivationToken = (payload: IPayload) =>
   jwt.sign(payload, ACTIVATION_TOKEN_SECRET as string, {
     expiresIn: '1d',
   })
 
-export const createResetToken = (payload: any) =>
+export const createResetToken = (payload: IPayload) =>
   jwt.sign(payload, RESET_TOKEN_SECRET as string, {
     expiresIn: '1d',
   })

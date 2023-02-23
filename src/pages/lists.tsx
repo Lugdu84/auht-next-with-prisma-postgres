@@ -90,8 +90,6 @@ export async function getServerSideProps(context: NextPageContext) {
     model: List,
   })
 
-  console.log(user)
-
   const lists = user.lists.map((list: IList) => ({
     // eslint-disable-next-line no-underscore-dangle
     id: list.id.toString(),
