@@ -14,7 +14,7 @@ export default function Home() {
   const { data: session } = useSession()
   console.log('session in Home', session)
   const applicationInfos =
-    'Application web permettant de se connecter avec google, facebook, github, discord, email et mot de passe.'
+    'Application web permettant de se connecter avec les providers google, github, discord, ainsi que par email et mot de passe.'
   const SlackInfos =
     "Dans ce projet, j'ai utilisé React, Next.js, Typescript, NextAuth, MongoDB, Mongoose TailwindCSS et Bcrypt. "
   return (
