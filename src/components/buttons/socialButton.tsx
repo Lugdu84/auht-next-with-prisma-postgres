@@ -35,7 +35,7 @@ export default function SocialButton({ id, text, csrfToken }: IProps) {
       <input type="hidden" name="csrfToken" defaultValue={csrfToken} />
       <button
         className={clsx(
-          'h-16 mb-2 py-2 px-4 flex justify-center items-center gap-2 hover:bg-gray-700 text-base font-semibold shadow-md  rounded-lg text-white',
+          'mb-2 py-2 px-4 flex justify-center items-center gap-2 hover:bg-gray-700 text-base font-semibold shadow-md  rounded-lg text-white',
           colors[id],
           'w-full'
         )}

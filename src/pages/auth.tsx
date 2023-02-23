@@ -30,10 +30,10 @@ export default function Auth({
           )}
           <div className=" w-full flex items-center justify-between px-12 ">
             <div className="w-full h-[1px] bg-gray-300 " />
-            <span className="text-sm uppercase mx-6 text-gray-400">Or</span>
+            <span className="text-sm uppercase mx-6 text-gray-400">Ou</span>
             <div className="w-full h-[1px] bg-gray-300 " />
           </div>
-          <div className=" mt-5 sm:grid sm:grid-cols-2 gap-2 w-10/12 ">
+          <div className=" mt-5 gap-2 w-10/12 ">
             {providers.map((provider: any) => {
               if (provider.name === 'Credentials') return
               // eslint-disable-next-line consistent-return
