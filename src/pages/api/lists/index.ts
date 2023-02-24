@@ -1,9 +1,8 @@
 import { NextApiResponse, NextApiRequest } from 'next'
-// eslint-disable-next-line import/no-unresolved
-import List from '@/models/List'
-// eslint-disable-next-line import/no-unresolved
-import User from '@/models/User'
 
+import prisma from '@/lib/prismadb'
+
+// eslint-disable-next-line consistent-return
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
@@ -18,20 +17,24 @@ export default async function handler(
         break
       case 'POST':
         try {
-          const newList = await List.create({
-            name,
-            user: userId,
-          })
-          const user = await User.findByIdAndUpdate(
-            userId,
-            {
-              // eslint-disable-next-line no-underscore-dangle
-              $push: { lists: newList._id },
+          const user = await prisma.user.findUnique({
+            where: {
+              id: userId,
             },
-            { new: true }
-          )
-          await user.save()
-
+          })
+          if (!user) {
+            return res.status(400).json({ message: 'Utilisateur introuvable' })
+          }
+          const newList = await prisma.list.create({
+            data: {
+              name,
+              user: {
+                connect: {
+                  id: userId,
+                },
+              },
+            },
+          })
           res.status(200).json(newList)
         } catch (error) {
           res.status(500).json({ message: error.message })

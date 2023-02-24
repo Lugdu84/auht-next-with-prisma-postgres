@@ -2,18 +2,16 @@ import { NextPageContext } from 'next'
 import { getSession, useSession } from 'next-auth/react'
 import { FormEvent, useState } from 'react'
 import axios from 'axios'
-import User from '../models/User'
-import List, { IList } from '../models/List'
-// eslint-disable-next-line import/no-unresolved
-import dbConnect from '@/lib/connectDb'
+import { List } from '@prisma/client'
+import prisma from '@/lib/prismadb'
 
 interface IListsProps {
-  lists: IList[]
+  lists: List[]
 }
 
 export default function Lists({ lists }: IListsProps) {
   const { data: session } = useSession()
-  const [listes, setListes] = useState<IList[]>(lists)
+  const [listes, setListes] = useState<List[]>(lists)
 
   const addList = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -29,9 +27,9 @@ export default function Lists({ lists }: IListsProps) {
           ...listes,
           {
             // eslint-disable-next-line no-underscore-dangle
-            id: res.data._id,
+            id: res.data.id,
             name: res.data.name,
-            user: res.data.user,
+            userId: res.data.userId,
           },
         ])
         input.value = ''
@@ -82,19 +80,13 @@ export default function Lists({ lists }: IListsProps) {
 }
 
 export async function getServerSideProps(context: NextPageContext) {
-  await dbConnect()
   const session = await getSession(context)
 
-  const user = await User.findOne({ email: session?.user?.email }).populate({
-    path: 'lists',
-    model: List,
+  const lists = await prisma.list.findMany({
+    where: {
+      userId: session?.user.id,
+    },
   })
-
-  const lists = user.lists.map((list: IList) => ({
-    // eslint-disable-next-line no-underscore-dangle
-    id: list.id.toString(),
-    name: list.name,
-  }))
   return {
     props: { lists },
   }

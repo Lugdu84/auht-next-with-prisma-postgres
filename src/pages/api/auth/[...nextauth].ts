@@ -4,18 +4,16 @@ import GoogleProvider from 'next-auth/providers/google'
 import GithubProvider from 'next-auth/providers/github'
 import DiscordProvider from 'next-auth/providers/discord'
 import CredentialsProvider from 'next-auth/providers/credentials'
-import { MongoDBAdapter } from '@next-auth/mongodb-adapter'
 import { JWT } from 'next-auth/jwt'
 // eslint-disable-next-line import/no-unresolved
 import { AdapterUser } from 'next-auth/adapters'
 import bcrypt from 'bcrypt'
-import clientPromise from '@/lib/mongodb'
-import dbConnect from '@/lib/connectDb'
-import MongoDbUser from '@/models/User'
+import { PrismaAdapter } from '@next-auth/prisma-adapter'
+import prisma from '@/lib/prismadb'
 
 export default NextAuth({
   // adapter: for MongodDB and providers: for social login
-  adapter: MongoDBAdapter(clientPromise),
+  adapter: PrismaAdapter(prisma),
   providers: [
     CredentialsProvider({
       name: 'Credentials',
@@ -32,15 +30,19 @@ export default NextAuth({
         },
       },
       async authorize(credentials) {
-        await dbConnect()
-        const user = await MongoDbUser.findOne({
-          email: credentials?.email,
+        const user = await prisma.user.findUnique({
+          where: {
+            email: credentials?.email,
+          },
         })
         if (!user) {
           throw new Error('Mot de passe ou adresse email incorrect')
         }
         if (user.emailVerified === null) {
           throw new Error('Veuillez vous connecter avec votre compte Google')
+        }
+        if (user.password === null) {
+          throw new Error('Veuillez renseigner un mot de passe')
         }
         const isPasswordValid = await bcrypt.compare(
           // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

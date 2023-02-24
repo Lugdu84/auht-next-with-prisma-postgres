@@ -42,7 +42,7 @@ export default function Home() {
             <div className="w-full flex justify-center">
               <Image
                 className="rounded-full h-48 w-48"
-                src={session?.user?.image as string}
+                src={session?.user?.image ?? '/auth/user.png'}
                 width={192}
                 height={192}
                 alt={`photo de ${session?.user?.name}`}

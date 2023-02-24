@@ -1,9 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-// eslint-disable-next-line import/no-unresolved
-import List from '@/models/List'
-// eslint-disable-next-line import/no-unresolved
-import User from '@/models/User'
+import prisma from '@/lib/prismadb'
 
+// eslint-disable-next-line consistent-return
 export default async (req: NextApiRequest, res: NextApiResponse) => {
   const { method } = req
   const { id } = req.query
@@ -18,9 +16,28 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
       break
     case 'DELETE':
       try {
-        await List.findByIdAndDelete(id)
-        const userAfterDelete = await User.findByIdAndUpdate(userId, {
-          $pull: { lists: id },
+        if (!id) {
+          return res.status(400).json({ message: "'Liste introuvable'" })
+        }
+        const listeToDelete = await prisma.list.delete({
+          where: {
+            id: id as string,
+          },
+        })
+        if (!listeToDelete) {
+          return res.status(400).json({ message: "'Liste introuvable'" })
+        }
+        const userAfterDelete = await prisma.user.update({
+          where: {
+            id: userId,
+          },
+          data: {
+            lists: {
+              disconnect: {
+                id: id as string,
+              },
+            },
+          },
         })
         res.status(200).json(userAfterDelete)
       } catch (error) {

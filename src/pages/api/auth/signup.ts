@@ -4,6 +4,7 @@ import validator from 'validator'
 import bcrypt from 'bcrypt'
 import dbConnect from '@/lib/connectDb'
 import User from '@/models/User'
+import prisma from '@/lib/prismadb'
 
 // eslint-disable-next-line consistent-return
 export default async function handler(
@@ -26,7 +27,11 @@ export default async function handler(
         .status(400)
         .json({ message: 'Entrez un numéro de téléphone valide' })
     }
-    const user = await User.findOne({ email })
+    const user = await prisma.user.findUnique({
+      where: {
+        email,
+      },
+    })
     if (user) {
       return res.status(400).json({ message: 'Ce compte existe déjà' })
     }
@@ -40,11 +45,19 @@ export default async function handler(
     const cryptedPassword = await bcrypt.hash(password, 12)
     const name = `${firstName} ${lastName}`
 
-    await User.create({
-      name,
-      email,
-      password: cryptedPassword,
-      phone,
+    // await User.create({
+    //   name,
+    //   email,
+    //   password: cryptedPassword,
+    //   phone,
+    // })
+    await prisma.user.create({
+      data: {
+        name,
+        email,
+        password: cryptedPassword,
+        emailVerified: new Date(),
+      },
     })
     // const list = await List.create({
     //   name: `La  première liste de ${name} `,
