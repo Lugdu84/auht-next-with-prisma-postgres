@@ -12,7 +12,6 @@ import { PrismaAdapter } from '@next-auth/prisma-adapter'
 import prisma from '@/lib/prismadb'
 
 export default NextAuth({
-  // adapter: for MongodDB and providers: for social login
   adapter: PrismaAdapter(prisma),
   providers: [
     CredentialsProvider({
