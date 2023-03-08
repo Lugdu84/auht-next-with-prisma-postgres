@@ -17,36 +17,38 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     case 'DELETE':
       try {
         if (!id) {
-          return res.status(400).json({ message: "'Liste introuvable'" })
+          return res
+            .status(400)
+            .json({ message: 'Le paramètre liste est obligatoire' })
         }
-        const listeToDelete = await prisma.list.delete({
+        const list = await prisma.list.findUnique({
+          where: {
+            id: id as string,
+          },
+          select: {
+            userId: true,
+          },
+        })
+
+        if (!list || list.userId !== userId) {
+          res.status(400).json({
+            message: "Cette liste n'existe pas ou vous ne vous appartient pas ",
+          })
+        }
+
+        await prisma.list.delete({
           where: {
             id: id as string,
           },
         })
-        if (!listeToDelete) {
-          return res.status(400).json({ message: "'Liste introuvable'" })
-        }
-        const userAfterDelete = await prisma.user.update({
-          where: {
-            id: userId,
-          },
-          data: {
-            lists: {
-              disconnect: {
-                id: id as string,
-              },
-            },
-          },
-        })
-        res.status(200).json(userAfterDelete)
+        res.status(200).json({ message: 'Liste supprimée avec succès' })
       } catch (error) {
         res.status(500).json({ error })
       }
       break
 
     default:
-      res.setHeader('Allow', ['GET', 'POST'])
+      res.setHeader('Allow', ['GET', 'POST', 'DELETE'])
       res.status(405).end(`Method ${method} Not Allowed`)
   }
 }

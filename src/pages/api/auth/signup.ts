@@ -2,8 +2,6 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import validator from 'validator'
 import bcrypt from 'bcrypt'
-import dbConnect from '@/lib/connectDb'
-import User from '@/models/User'
 import prisma from '@/lib/prismadb'
 
 // eslint-disable-next-line consistent-return
@@ -12,7 +10,6 @@ export default async function handler(
   res: NextApiResponse
 ) {
   try {
-    await dbConnect()
     const { firstName, lastName, email, password, phone } = req.body
     if (!firstName || !lastName || !email || !password || !phone) {
       return res
