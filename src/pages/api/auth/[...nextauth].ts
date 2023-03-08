@@ -11,6 +11,16 @@ import bcrypt from 'bcrypt'
 import { PrismaAdapter } from '@next-auth/prisma-adapter'
 import prisma from '@/lib/prismadb'
 
+if (!process.env.GOOGLE_ID || !process.env.GOOGLE_SECRET) {
+  throw new Error('GOOGLE_ID and GOOGLE_SECRET must be defined')
+}
+if (!process.env.GITHUB_ID || !process.env.GITHUB_SECRET) {
+  throw new Error('GITHUB_ID and GITHUB_SECRET must be defined')
+}
+if (!process.env.DISCORD_CLIENT_ID || !process.env.DISCORD_SECRET) {
+  throw new Error('DISCORD_CLIENT_ID and DISCORD_SECRET must be defined')
+}
+
 export default NextAuth({
   adapter: PrismaAdapter(prisma),
   providers: [
@@ -61,16 +71,16 @@ export default NextAuth({
       },
     }),
     GoogleProvider({
-      clientId: process.env.GOOGLE_ID as string,
-      clientSecret: process.env.GOOGLE_SECRET as string,
+      clientId: process.env.GOOGLE_ID,
+      clientSecret: process.env.GOOGLE_SECRET,
     }),
     GithubProvider({
-      clientId: process.env.GITHUB_ID as string,
-      clientSecret: process.env.GITHUB_SECRET as string,
+      clientId: process.env.GITHUB_ID,
+      clientSecret: process.env.GITHUB_SECRET,
     }),
     DiscordProvider({
-      clientId: process.env.DISCORD_CLIENT_ID as string,
-      clientSecret: process.env.DISCORD_SECRET as string,
+      clientId: process.env.DISCORD_CLIENT_ID,
+      clientSecret: process.env.DISCORD_SECRET,
     }),
   ],
   secret: process.env.NEXTAUTH_SECRET as string,
