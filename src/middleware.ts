@@ -29,7 +29,7 @@ export default async function middleware(req: NextRequest) {
   }
   if (pathname.startsWith('/admin')) {
     if (session) {
-      if (session.role === 'admin') {
+      if (session.role === 'ADMIN') {
         return NextResponse.next()
       }
       return NextResponse.redirect(`${origin}`)

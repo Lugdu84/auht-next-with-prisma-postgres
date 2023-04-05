@@ -16,7 +16,7 @@ export default function Home() {
   const applicationInfos =
     'Application web permettant de se connecter avec les providers google, github, discord, ainsi que par email et mot de passe.'
   const SlackInfos =
-    "Dans ce projet, j'ai utilisé React, Next.js, Typescript, NextAuth, MongoDB, Mongoose TailwindCSS et Bcrypt. "
+    "Dans ce projet, j'ai utilisé React, Next.js, Typescript, NextAuth, MongoDB, Prisma, TailwindCSS et Bcrypt. "
   return (
     <div className="home bg-black min-h-screen text-white flex items-center justify-center">
       <Head>
